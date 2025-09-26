@@ -14,7 +14,7 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
-		"script:init-type-ids": "vite-node --options.transformMode.ssr='/.*/' src/lib/scripts/initTypeIds.ts"
+		"script:load-static-data": "vite-node --options.transformMode.ssr='/.*/' src/lib/scripts/loadStaticData.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",
@@ -22,6 +22,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/node": "^22",
+		"csv-parse": "^6.1.0",
 		"drizzle-kit": "^0.30.2",
 		"drizzle-orm": "^0.40.0",
 		"svelte": "^5.0.0",
