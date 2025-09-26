@@ -2,6 +2,7 @@
   import type { PageProps } from "./$types";
   import * as Card from "$lib/components/ui/card";
   import * as Table from "$lib/components/ui/table";
+  import { ScrollArea } from "$lib/components/ui/scroll-area";
 
   let { data }: PageProps = $props();
 </script>
@@ -20,32 +21,33 @@
     <Card.Title>Sell Orders</Card.Title>
   </Card.Header>
   <Card.Content class="overflow-x-auto">
-    <Table.Root>
-      <Table.Header>
-        <Table.Row>
-          <Table.Head>Price</Table.Head>
-          <Table.Head>Quantity</Table.Head>
-          <Table.Head>Issued</Table.Head>
-          <Table.Head>Location ID</Table.Head>
-          <Table.Head>Range</Table.Head>
-          <Table.Head>Duration</Table.Head>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {#each data.orders.sell as orders (orders.order_id)}
+    <ScrollArea orientation="vertical" type="always" class="h-96">
+      <Table.Root>
+        <Table.Header>
           <Table.Row>
-            <Table.Cell>{orders.price}</Table.Cell>
-            <Table.Cell
-              >{orders.volume_remain} / {orders.volume_total}</Table.Cell
-            >
-            <Table.Cell>{new Date(orders.issued).toLocaleString()}</Table.Cell>
-            <Table.Cell>{orders.location_id}</Table.Cell>
-            <Table.Cell>{orders.range}</Table.Cell>
-            <Table.Cell>{orders.duration} days</Table.Cell>
+            <Table.Head>Price</Table.Head>
+            <Table.Head>Quantity</Table.Head>
+            <Table.Head>Issued</Table.Head>
+            <Table.Head>Location ID</Table.Head>
+            <Table.Head>Range</Table.Head>
+            <Table.Head>Duration</Table.Head>
           </Table.Row>
-        {/each}
-      </Table.Body>
-    </Table.Root>
+        </Table.Header>
+        <Table.Body>
+          {#each data.orders.sell as orders (orders.order_id)}
+            <Table.Row>
+              <Table.Cell>{orders.price}</Table.Cell>
+              <Table.Cell>{orders.volume_remain}</Table.Cell>
+              <Table.Cell>{new Date(orders.issued).toLocaleString()}</Table.Cell
+              >
+              <Table.Cell>{orders.location_id}</Table.Cell>
+              <Table.Cell>{orders.range}</Table.Cell>
+              <Table.Cell>{orders.duration} days</Table.Cell>
+            </Table.Row>
+          {/each}
+        </Table.Body>
+      </Table.Root>
+    </ScrollArea>
   </Card.Content>
 </Card.Root>
 
@@ -54,31 +56,32 @@
     <Card.Title>Buy Orders</Card.Title>
   </Card.Header>
   <Card.Content class="overflow-x-auto">
-    <Table.Root>
-      <Table.Header>
-        <Table.Row>
-          <Table.Head>Price</Table.Head>
-          <Table.Head>Quantity</Table.Head>
-          <Table.Head>Issued</Table.Head>
-          <Table.Head>Location ID</Table.Head>
-          <Table.Head>Range</Table.Head>
-          <Table.Head>Duration</Table.Head>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {#each data.orders.buy as orders (orders.order_id)}
+    <ScrollArea orientation="vertical" type="always" class="h-96">
+      <Table.Root>
+        <Table.Header>
           <Table.Row>
-            <Table.Cell>{orders.price}</Table.Cell>
-            <Table.Cell
-              >{orders.volume_remain} / {orders.volume_total}</Table.Cell
-            >
-            <Table.Cell>{new Date(orders.issued).toLocaleString()}</Table.Cell>
-            <Table.Cell>{orders.location_id}</Table.Cell>
-            <Table.Cell>{orders.range}</Table.Cell>
-            <Table.Cell>{orders.duration} days</Table.Cell>
+            <Table.Head>Price</Table.Head>
+            <Table.Head>Quantity</Table.Head>
+            <Table.Head>Issued</Table.Head>
+            <Table.Head>Location ID</Table.Head>
+            <Table.Head>Range</Table.Head>
+            <Table.Head>Duration</Table.Head>
           </Table.Row>
-        {/each}
-      </Table.Body>
-    </Table.Root>
+        </Table.Header>
+        <Table.Body>
+          {#each data.orders.buy as orders (orders.order_id)}
+            <Table.Row>
+              <Table.Cell>{orders.price}</Table.Cell>
+              <Table.Cell>{orders.volume_remain}</Table.Cell>
+              <Table.Cell>{new Date(orders.issued).toLocaleString()}</Table.Cell
+              >
+              <Table.Cell>{orders.location_id}</Table.Cell>
+              <Table.Cell>{orders.range}</Table.Cell>
+              <Table.Cell>{orders.duration} days</Table.Cell>
+            </Table.Row>
+          {/each}
+        </Table.Body>
+      </Table.Root>
+    </ScrollArea>
   </Card.Content>
 </Card.Root>

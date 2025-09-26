@@ -51,5 +51,7 @@ export const getMarketOrders = query(z.number(), async (typeId: number) => {
       pages = parseInt(response.headers.get("X-Pages") || "1", 10);
     }
   } while (++page <= pages);
+  buyOrders.sort((a, b) => b.price - a.price);
+  sellOrders.sort((a, b) => a.price - b.price);
   return { buy: buyOrders, sell: sellOrders };
 });
