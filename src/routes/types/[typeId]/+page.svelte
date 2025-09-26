@@ -1,11 +1,15 @@
 <script lang="ts">
   import type { PageProps } from "./$types";
+  import * as Card from "$lib/components/ui/card";
 
   let { data }: PageProps = $props();
 </script>
 
-<h1>{data.item.typeInfo.typeName}</h1>
-<p>Type ID: {data.item.typeInfo.typeId}</p>
-{#if data.item.marketGroup}
-  <p>Market Group: {data.item.marketGroup.marketGroupName}</p>
-{/if}
+<Card.Root class="w-full max-w-xl">
+  <Card.Header>
+    <Card.Title>{data.typeInfo.typeName}</Card.Title>
+  </Card.Header>
+  <Card.Content>
+    <p>Type ID: {data.typeInfo.typeId}</p>
+  </Card.Content>
+</Card.Root>

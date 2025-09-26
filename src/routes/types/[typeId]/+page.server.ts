@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
       )
       .limit(1);
     if (items.length === 1) {
-      return { item: items[0] };
+      return items[0];
     }
   } catch (e) {
     console.error("Database query error:", e);

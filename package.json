@@ -40,12 +40,14 @@
 		"vite-node": "^3.2.4"
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.8.0"
+		"better-sqlite3": "^11.8.0",
+		"mode-watcher": "^1.1.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
-			"esbuild",
-			"better-sqlite3"
+			"@tailwindcss/oxide",
+			"better-sqlite3",
+			"esbuild"
 		]
 	}
 }
