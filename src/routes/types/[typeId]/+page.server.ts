@@ -4,6 +4,7 @@ import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { marketGroups, types } from "$lib/server/db/schema";
 
+import { getMarketOrders } from "./page.remote";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -13,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
   }
 
   try {
-    const items = await db
+    const rows = await db
       .select({ typeInfo: types, marketGroup: marketGroups })
       .from(types)
       .where(eq(types.typeId, typeId))
@@ -22,8 +23,10 @@ export const load: PageServerLoad = async ({ params }) => {
         eq(types.marketGroupId, marketGroups.marketGroupId)
       )
       .limit(1);
-    if (items.length === 1) {
-      return items[0];
+    if (rows.length === 1) {
+      const data = rows[0];
+      const typeId = data.typeInfo.typeId;
+      return { ...data, orders: await getMarketOrders(typeId) };
     }
   } catch (e) {
     console.error("Database query error:", e);
