@@ -1,4 +1,6 @@
 import * as z from "zod";
+import { db } from "$lib/server/db";
+import { staStations } from "$lib/server/db/schema";
 
 // Helper function to convert snake_case to camelCase
 function snakeToCamel(str: string): string {
@@ -52,7 +54,9 @@ const MarketOrderApiSchema = z.object({
 });
 
 const MarketOrder = MarketOrderApiSchema.transform(convertKeysToCamelCase);
-export type MarketOrder = z.infer<typeof MarketOrder>;
+export type MarketOrder = z.infer<typeof MarketOrder> & {
+  locationName?: string;
+};
 
 const getAllMarketOrders = async (
   regionId: number,
@@ -63,10 +67,22 @@ const getAllMarketOrders = async (
   let buyOrders: MarketOrder[] = [];
   let sellOrders: MarketOrder[] = [];
 
+  let stations = db
+    .select({
+      stationId: staStations.stationId,
+      stationName: staStations.stationName,
+    })
+    .from(staStations)
+    .then(
+      (stations) => new Map(stations.map((s) => [s.stationId, s.stationName]))
+    );
+
   do {
+    console.time(`esi:fetch:orders:${typeId}:${page}`);
     const response = await fetch(
       `https://esi.evetech.net/latest/markets/${regionId}/orders/?type_id=${typeId}&order_type=all&page=${page}`
     );
+    console.timeEnd(`esi:fetch:orders:${typeId}:${page}`);
     const data: MarketOrder[] = z
       .array(MarketOrder)
       .parse(await response.json());
@@ -83,6 +99,17 @@ const getAllMarketOrders = async (
       pages = parseInt(response.headers.get("X-Pages") || "1", 10);
     }
   } while (++page <= pages);
+
+  const stationMap = await stations;
+  for (const orderList of [buyOrders, sellOrders]) {
+    for (const order of orderList) {
+      if (stationMap.has(order.locationId)) {
+        order.locationName = stationMap.get(order.locationId)!;
+      } else {
+        order.locationName = order.locationId.toString();
+      }
+    }
+  }
 
   buyOrders.sort((a, b) => b.price - a.price);
   sellOrders.sort((a, b) => a.price - b.price);
