@@ -15,6 +15,16 @@
   </Card.Content>
 </Card.Root>
 
-<OrderTable title="Sell Orders" orders={data.orders.sell} class="mt-2" />
+<OrderTable
+  title="Sell Orders"
+  orders={data.orders.sell}
+  time={data.time}
+  class="mt-2"
+/>
 
-<OrderTable title="Buy Orders" orders={data.orders.buy} class="mt-2" />
+<OrderTable
+  title="Buy Orders"
+  orders={data.orders.buy}
+  time={data.time}
+  class="mt-2"
+/>

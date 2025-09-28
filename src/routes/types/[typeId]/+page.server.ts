@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ params }) => {
       const data = rows[0];
       const typeId = data.typeInfo.typeId;
       const orders = await getMarketOrders(typeId);
-      return { ...data, orders };
+      return { ...data, orders, time: new Date() };
     }
   } catch (e) {
     console.error("Database query error:", e);

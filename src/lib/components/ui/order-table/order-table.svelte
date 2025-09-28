@@ -10,22 +10,23 @@
   let {
     title,
     orders,
+    time,
     class: className,
   }: {
     title: string;
     orders: Array<MarketOrder>;
+    time: Date;
     class?: ClassValue;
   } = $props();
 
   function calculateTimeRemaining(order: MarketOrder): string {
     const endDate = addDays(new Date(order.issued), order.duration);
-    const now = new Date();
 
-    if (now >= endDate) {
+    if (time >= endDate) {
       return "Expired";
     }
 
-    const duration = intervalToDuration({ start: now, end: endDate });
+    const duration = intervalToDuration({ start: time, end: endDate });
     const formatted = formatDuration(duration, {
       format: ["days", "hours", "minutes", "seconds"],
       delimiter: " ",
