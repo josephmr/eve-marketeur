@@ -58,6 +58,17 @@ export type MarketOrder = z.infer<typeof MarketOrder> & {
   locationName?: string;
 };
 
+const MarketHistoryApiSchema = z.object({
+  average: z.number(),
+  date: z.string(),
+  highest: z.number(),
+  lowest: z.number(),
+  order_count: z.number(),
+  volume: z.number(),
+});
+const MarketHistory = MarketHistoryApiSchema.transform(convertKeysToCamelCase);
+export type MarketHistory = z.infer<typeof MarketHistory>;
+
 const getAllMarketOrders = async (
   regionId: number,
   typeId: number
@@ -82,10 +93,10 @@ const getAllMarketOrders = async (
     const response = await fetch(
       `https://esi.evetech.net/latest/markets/${regionId}/orders/?type_id=${typeId}&order_type=all&page=${page}`
     );
-    console.timeEnd(`esi:fetch:orders:${typeId}:${page}`);
     const data: MarketOrder[] = z
       .array(MarketOrder)
       .parse(await response.json());
+    console.timeEnd(`esi:fetch:orders:${typeId}:${page}`);
 
     for (const order of data) {
       if (order.isBuyOrder) {
@@ -117,10 +128,21 @@ const getAllMarketOrders = async (
   return { buy: buyOrders, sell: sellOrders };
 };
 
+async function getMarketHistory(regionId: number, typeId: number) {
+  const response = await fetch(
+    `https://esi.evetech.net/markets/${regionId}/history/?type_id=${typeId}`
+  );
+  const data: MarketHistory[] = z
+    .array(MarketHistory)
+    .parse(await response.json());
+  return data;
+}
+
 const esi = {
   market: {
     orders: {
       getAll: getAllMarketOrders,
+      getHistory: getMarketHistory,
     },
   },
 };

@@ -41,7 +41,7 @@
   }
 </script>
 
-<Card.Root class={cn("w-full max-w-5xl", className)}>
+<Card.Root class={cn(className)}>
   <Card.Header>
     <Card.Title>{title}</Card.Title>
   </Card.Header>

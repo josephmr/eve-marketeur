@@ -27,12 +27,14 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/better-sqlite3": "^7.6.12",
+		"@types/d3-scale": "^4.0.9",
 		"@types/node": "^22",
 		"bits-ui": "^2.11.4",
 		"clsx": "^2.1.1",
 		"csv-parse": "^6.1.0",
 		"drizzle-kit": "^0.30.2",
 		"drizzle-orm": "^0.40.0",
+		"layerchart": "2.0.0-next.27",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"tailwind-merge": "^3.3.1",
@@ -45,6 +47,7 @@
 	},
 	"dependencies": {
 		"better-sqlite3": "^11.8.0",
+		"d3-scale": "^4.0.2",
 		"date-fns": "^4.1.0",
 		"mode-watcher": "^1.1.0",
 		"zod": "^4.1.11"

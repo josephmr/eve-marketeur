@@ -1,9 +1,20 @@
 <script lang="ts">
   import type { PageProps } from "./$types";
   import * as Card from "$lib/components/ui/card";
+  import * as Chart from "$lib/components/ui/chart";
   import OrderTable from "$lib/components/ui/order-table/order-table.svelte";
+  import { scaleUtc } from "d3-scale";
+  import { LineChart } from "layerchart";
+  import { getMarketHistory } from "./page.remote";
 
   let { data }: PageProps = $props();
+
+  const chartConfig = {
+    average: {
+      label: "Average",
+      color: "var(--chart-1)",
+    },
+  } satisfies Chart.ChartConfig;
 </script>
 
 <Card.Root class="w-full max-w-xl">
@@ -18,16 +29,55 @@
   </Card.Content>
 </Card.Root>
 
-<OrderTable
-  title="Sell Orders"
-  orders={data.orders.sell}
-  time={data.time}
-  class="mt-2"
-/>
+<Card.Root class="w-full mt-2 p-4">
+  <Card.Content>
+    <Chart.Container config={chartConfig} class="w-full h-96">
+      {#await getMarketHistory(data.typeInfo.typeId) then history}
+        <LineChart
+          data={history}
+          axis
+          x={(d) => new Date(d.date)}
+          xScale={scaleUtc()}
+          series={[
+            {
+              key: "average",
+              label: "Average",
+              color: chartConfig.average.color,
+            },
+          ]}
+          props={{
+            xAxis: {
+              format: (v: Date) =>
+                v.toLocaleDateString("en-US", { month: "short" }),
+            },
+            yAxis: {
+              format: (v: number) =>
+                v >= 1e6
+                  ? `$${(v / 1e6).toFixed(1)}M`
+                  : v >= 1e3
+                    ? `$${(v / 1e3).toFixed(1)}K`
+                    : `$${v.toFixed(2)}`,
+              ticks: 5,
+            },
+          }}
+        />
+      {/await}
+    </Chart.Container>
+  </Card.Content>
+</Card.Root>
 
-<OrderTable
-  title="Buy Orders"
-  orders={data.orders.buy}
-  time={data.time}
-  class="mt-2"
-/>
+<div class="flex flex-row items-center w-full flex-wrap gap-2 mt-2">
+  <OrderTable
+    title="Sell Orders"
+    orders={data.orders.sell}
+    time={data.time}
+    class="flex-1"
+  />
+
+  <OrderTable
+    title="Buy Orders"
+    orders={data.orders.buy}
+    time={data.time}
+    class="flex-1"
+  />
+</div>
