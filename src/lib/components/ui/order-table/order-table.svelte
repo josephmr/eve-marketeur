@@ -14,7 +14,7 @@
     class: className,
   }: {
     title: string;
-    orders: Array<MarketOrder>;
+    orders: MarketOrder[];
     time: Date;
     class?: ClassValue;
   } = $props();
@@ -47,24 +47,28 @@
   </Card.Header>
   <Card.Content>
     <ScrollArea orientation="vertical" type="hover" class="h-96">
-      <Table.Root>
+      <Table.Root class="border-2">
         <Table.Header>
           <Table.Row>
-            <Table.Head>Quantity</Table.Head>
-            <Table.Head>Price</Table.Head>
-            <Table.Head>Location ID</Table.Head>
-            <Table.Head>Range</Table.Head>
-            <Table.Head>Expires In</Table.Head>
+            <Table.Head class="border-2">Quantity</Table.Head>
+            <Table.Head class="border-2">Price</Table.Head>
+            <Table.Head class="border-2">Location ID</Table.Head>
+            <Table.Head class="border-2">Range</Table.Head>
+            <Table.Head class="border-2">Expires In</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {#each orders as order (order.orderId)}
             <Table.Row>
-              <Table.Cell class="text-right">{order.volumeRemain}</Table.Cell>
-              <Table.Cell class="text-right">{order.price}</Table.Cell>
-              <Table.Cell>{order.locationId}</Table.Cell>
-              <Table.Cell>{order.range}</Table.Cell>
-              <Table.Cell>{calculateTimeRemaining(order)}</Table.Cell>
+              <Table.Cell class="text-right border-2"
+                >{order.volumeRemain.toLocaleString()}</Table.Cell
+              >
+              <Table.Cell class="text-right border-2">{order.price}</Table.Cell>
+              <Table.Cell class="border-2">{order.locationId}</Table.Cell>
+              <Table.Cell class="border-2">{order.range}</Table.Cell>
+              <Table.Cell class="border-2"
+                >{calculateTimeRemaining(order)}</Table.Cell
+              >
             </Table.Row>
           {/each}
         </Table.Body>

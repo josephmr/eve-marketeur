@@ -6,13 +6,22 @@ function snakeToCamel(str: string): string {
 }
 
 // Helper function to convert object keys from snake_case to camelCase
-function convertKeysToCamelCase<T extends Record<string, any>>(obj: T): any {
+function convertKeysToCamelCase<T extends Record<string, any>>(
+  obj: T
+): CamelCaseKeys<T> {
   const result: any = {};
   for (const [key, value] of Object.entries(obj)) {
     result[snakeToCamel(key)] = value;
   }
   return result;
 }
+
+type SnakeToCamel<S extends string> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<SnakeToCamel<U>>}`
+  : S;
+type CamelCaseKeys<T> = {
+  [K in keyof T as SnakeToCamel<string & K>]: T[K];
+};
 
 const MarketOrderApiSchema = z.object({
   duration: z.number(),
@@ -43,7 +52,6 @@ const MarketOrderApiSchema = z.object({
 });
 
 const MarketOrder = MarketOrderApiSchema.transform(convertKeysToCamelCase);
-
 export type MarketOrder = z.infer<typeof MarketOrder>;
 
 const getAllMarketOrders = async (

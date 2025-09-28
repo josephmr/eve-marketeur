@@ -11,10 +11,12 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"db:push": "drizzle-kit push",
+		"db:pull": "drizzle-kit pull",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
-		"script:load-static-data": "vite-node --options.transformMode.ssr='/.*/' src/lib/scripts/loadStaticData.ts"
+		"script:load-static-data": "vite-node --options.transformMode.ssr='/.*/' src/scripts/loadStaticData.ts",
+		"script:update-sde": "vite-node --options.transformMode.ssr='/.*/' src/scripts/updateSde.ts"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.9.0",

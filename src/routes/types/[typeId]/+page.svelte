@@ -7,11 +7,14 @@
 </script>
 
 <Card.Root class="w-full max-w-xl">
-  <Card.Header>
+  <Card.Header class="text-lg">
     <Card.Title>{data.typeInfo.typeName}</Card.Title>
   </Card.Header>
   <Card.Content>
     <p>Type ID: {data.typeInfo.typeId}</p>
+    {#if data.marketGroup}
+      <p>Market Group: {data.marketGroup.marketGroupName}</p>
+    {/if}
   </Card.Content>
 </Card.Root>
 
