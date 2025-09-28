@@ -52,7 +52,7 @@
           <Table.Row>
             <Table.Head class="border-2">Quantity</Table.Head>
             <Table.Head class="border-2">Price</Table.Head>
-            <Table.Head class="border-2">Location ID</Table.Head>
+            <Table.Head class="border-2">Location</Table.Head>
             <Table.Head class="border-2">Range</Table.Head>
             <Table.Head class="border-2">Expires In</Table.Head>
           </Table.Row>
@@ -64,7 +64,7 @@
                 >{order.volumeRemain.toLocaleString()}</Table.Cell
               >
               <Table.Cell class="text-right border-2">{order.price}</Table.Cell>
-              <Table.Cell class="border-2">{order.locationId}</Table.Cell>
+              <Table.Cell class="border-2">{order.locationName}</Table.Cell>
               <Table.Cell class="border-2">{order.range}</Table.Cell>
               <Table.Cell class="border-2"
                 >{calculateTimeRemaining(order)}</Table.Cell
