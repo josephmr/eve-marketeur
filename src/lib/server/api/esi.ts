@@ -1,6 +1,7 @@
 import * as z from "zod";
 import { db } from "$lib/server/db";
 import { staStations } from "$lib/server/db/schema";
+import fetch from "$lib/server/fetch";
 
 // Helper function to convert snake_case to camelCase
 function snakeToCamel(str: string): string {
@@ -66,7 +67,12 @@ const MarketHistoryApiSchema = z.object({
   order_count: z.number(),
   volume: z.number(),
 });
-const MarketHistory = MarketHistoryApiSchema.transform(convertKeysToCamelCase);
+const MarketHistory = MarketHistoryApiSchema.transform(
+  convertKeysToCamelCase
+).transform((obj) => ({
+  ...obj,
+  date: new Date(obj.date),
+}));
 export type MarketHistory = z.infer<typeof MarketHistory>;
 
 const getAllMarketOrders = async (
