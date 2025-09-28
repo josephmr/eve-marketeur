@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"better-sqlite3": "^11.8.0",
+		"date-fns": "^4.1.0",
 		"mode-watcher": "^1.1.0",
 		"zod": "^4.1.11"
 	},

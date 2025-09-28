@@ -37,6 +37,29 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  --font-sans: var(--font-mono);
+
+	.rounded-xs,
+	.rounded-sm,
+	.rounded-md,
+	.rounded-lg,
+	.rounded-xl {
+		border-radius: 0;
+	}
+
+	.shadow-xs,
+	.shadow-sm,
+	.shadow-md,
+	.shadow-lg,
+	.shadow-xl {
+		box-shadow: none;
+	}
+
+	[data-slot="toggle-group"],
+	[data-slot="toggle-group-item"] {
+		@apply !rounded-none !shadow-none;
+	}
 }
 
 .dark {

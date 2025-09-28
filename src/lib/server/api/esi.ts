@@ -1,0 +1,93 @@
+import * as z from "zod";
+
+// Helper function to convert snake_case to camelCase
+function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+// Helper function to convert object keys from snake_case to camelCase
+function convertKeysToCamelCase<T extends Record<string, any>>(obj: T): any {
+  const result: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[snakeToCamel(key)] = value;
+  }
+  return result;
+}
+
+const MarketOrderApiSchema = z.object({
+  duration: z.number(),
+  is_buy_order: z.boolean(),
+  issued: z.string(),
+  location_id: z.number(),
+  min_volume: z.number(),
+  order_id: z.number(),
+  price: z.number(),
+  range: z.enum([
+    "station",
+    "solarsystem",
+    "region",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "10",
+    "20",
+    "30",
+    "40",
+  ]),
+  system_id: z.number(),
+  type_id: z.number(),
+  volume_remain: z.number(),
+  volume_total: z.number(),
+});
+
+const MarketOrder = MarketOrderApiSchema.transform(convertKeysToCamelCase);
+
+export type MarketOrder = z.infer<typeof MarketOrder>;
+
+const getAllMarketOrders = async (
+  regionId: number,
+  typeId: number
+): Promise<{ buy: MarketOrder[]; sell: MarketOrder[] }> => {
+  let page = 1;
+  let pages = 1;
+  let buyOrders: MarketOrder[] = [];
+  let sellOrders: MarketOrder[] = [];
+
+  do {
+    const response = await fetch(
+      `https://esi.evetech.net/latest/markets/${regionId}/orders/?type_id=${typeId}&order_type=all&page=${page}`
+    );
+    const data: MarketOrder[] = z
+      .array(MarketOrder)
+      .parse(await response.json());
+
+    for (const order of data) {
+      if (order.isBuyOrder) {
+        buyOrders.push(order);
+      } else {
+        sellOrders.push(order);
+      }
+    }
+
+    if (response.headers.get("X-Pages")) {
+      pages = parseInt(response.headers.get("X-Pages") || "1", 10);
+    }
+  } while (++page <= pages);
+
+  buyOrders.sort((a, b) => b.price - a.price);
+  sellOrders.sort((a, b) => a.price - b.price);
+
+  return { buy: buyOrders, sell: sellOrders };
+};
+
+const esi = {
+  market: {
+    orders: {
+      getAll: getAllMarketOrders,
+    },
+  },
+};
+
+export default esi;

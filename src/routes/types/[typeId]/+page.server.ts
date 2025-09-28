@@ -26,7 +26,8 @@ export const load: PageServerLoad = async ({ params }) => {
     if (rows.length === 1) {
       const data = rows[0];
       const typeId = data.typeInfo.typeId;
-      return { ...data, orders: await getMarketOrders(typeId) };
+      const orders = await getMarketOrders(typeId);
+      return { ...data, orders };
     }
   } catch (e) {
     console.error("Database query error:", e);

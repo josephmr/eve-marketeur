@@ -11,4 +11,6 @@
 </svelte:head>
 
 <ModeWatcher defaultMode={"dark"} />
-{@render children?.()}
+<div class="min-h-screen m-2">
+  {@render children?.()}
+</div>
