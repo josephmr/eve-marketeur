@@ -19,17 +19,17 @@ export const load: PageServerLoad = async ({ params }) => {
     const rows = await db
       .select({ typeInfo: invTypes, marketGroup: invMarketGroups })
       .from(invTypes)
-      .where(eq(invTypes.typeId, typeId))
+      .where(eq(invTypes.typeID, typeId))
       .leftJoin(
         invMarketGroups,
-        eq(invTypes.marketGroupId, invMarketGroups.marketGroupId)
+        eq(invTypes.marketGroupID, invMarketGroups.marketGroupID)
       )
       .limit(1);
     console.timeEnd(`load:db:${params.typeId}`);
     if (rows.length === 1) {
       const data = rows[0];
       console.time(`load:orders:${params.typeId}`);
-      const orders = await getMarketOrders(data.typeInfo.typeId);
+      const orders = await getMarketOrders(data.typeInfo.typeID);
       console.timeEnd(`load:orders:${params.typeId}`);
       console.timeEnd(`load:${params.typeId}`);
       return { ...data, orders, time: new Date() };

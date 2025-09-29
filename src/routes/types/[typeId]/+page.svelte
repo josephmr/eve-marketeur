@@ -26,7 +26,7 @@
     <Card.Title>{data.typeInfo.typeName}</Card.Title>
   </Card.Header>
   <Card.Content>
-    <p>Type ID: {data.typeInfo.typeId}</p>
+    <p>Type ID: {data.typeInfo.typeID}</p>
     {#if data.marketGroup}
       <p>Market Group: {data.marketGroup.marketGroupName}</p>
     {/if}
@@ -35,7 +35,7 @@
 
 <Card.Root class="w-full mt-2 p-4">
   <Card.Content class="w-full h-96 grid">
-    {#await getMarketHistory(data.typeInfo.typeId) then history}
+    {#await getMarketHistory(data.typeInfo.typeID) then history}
       <div class="flex flex-col" style="grid-area: 1/1;">
         <div class="flex-1"></div>
         <Chart.Container config={chartConfig} class="w-full h-32">

@@ -86,7 +86,7 @@ const getAllMarketOrders = async (
 
   let stations = db
     .select({
-      stationId: staStations.stationId,
+      stationId: staStations.stationID,
       stationName: staStations.stationName,
     })
     .from(staStations)
@@ -135,12 +135,16 @@ const getAllMarketOrders = async (
 };
 
 async function getMarketHistory(regionId: number, typeId: number) {
+  console.time(`esi:fetch:history:${typeId}`);
   const response = await fetch(
     `https://esi.evetech.net/markets/${regionId}/history/?type_id=${typeId}`
   );
+  console.timeEnd(`esi:fetch:history:${typeId}`);
+  console.time(`esi:parse:history:${typeId}`);
   const data: MarketHistory[] = z
     .array(MarketHistory)
     .parse(await response.json());
+  console.timeEnd(`esi:parse:history:${typeId}`);
   return data;
 }
 

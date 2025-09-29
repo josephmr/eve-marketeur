@@ -26,9 +26,9 @@
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tailwindcss/vite": "^4.0.0",
-		"@types/better-sqlite3": "^7.6.12",
 		"@types/d3-scale": "^4.0.9",
 		"@types/node": "^22",
+		"@types/pg": "^8.15.5",
 		"bits-ui": "^2.11.4",
 		"clsx": "^2.1.1",
 		"csv-parse": "^6.1.0",
@@ -46,17 +46,16 @@
 		"vite-node": "^3.2.4"
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.8.0",
 		"d3-scale": "^4.0.2",
 		"date-fns": "^4.1.0",
 		"mode-watcher": "^1.1.0",
+		"pg": "^8.16.3",
 		"undici": "^7.16.0",
 		"zod": "^4.1.11"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"@tailwindcss/oxide",
-			"better-sqlite3",
 			"esbuild"
 		]
 	}
