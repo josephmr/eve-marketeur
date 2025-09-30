@@ -125,14 +125,14 @@
                   year: "numeric",
                 })}
             >
-              {#snippet formatter({ name, index, value, item })}
+              {#snippet formatter({ item })}
                 <div class="flex flex-col">
                   <div>
-                    Average: <span>{item.value.toLocaleString()}</span>
+                    Average: <span>{item.payload.average.toLocaleString()}</span
+                    >
                   </div>
                   <div>
-                    Volume: <span>{history[index].volume.toLocaleString()}</span
-                    >
+                    Volume: <span>{item.payload.volume.toLocaleString()}</span>
                   </div>
                 </div>
               {/snippet}

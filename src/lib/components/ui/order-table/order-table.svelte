@@ -63,7 +63,9 @@
               <Table.Cell class="text-right border-2"
                 >{order.volumeRemain.toLocaleString()}</Table.Cell
               >
-              <Table.Cell class="text-right border-2">{order.price}</Table.Cell>
+              <Table.Cell class="text-right border-2"
+                >{order.price.toLocaleString()}</Table.Cell
+              >
               <Table.Cell class="border-2">{order.locationName}</Table.Cell>
               <Table.Cell class="border-2">{order.range}</Table.Cell>
               <Table.Cell class="border-2"
