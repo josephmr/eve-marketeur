@@ -3,10 +3,10 @@ nixPkgs = ["nodejs", "pnpm"]
 nixpkgsArchive = "a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0"
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ['pnpm install']
 
 [phases.build]
-cmds = ['npm run build']
+cmds = ['pnpm run build']
 
 [start]
 cmd = 'node build'
