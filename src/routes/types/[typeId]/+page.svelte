@@ -26,6 +26,11 @@
     <Card.Title>{data.typeInfo.typeName}</Card.Title>
   </Card.Header>
   <Card.Content>
+    <img
+      src={`https://images.evetech.net/types/${data.typeInfo.typeID}/icon?size=64`}
+      alt={data.typeInfo.typeName}
+      class="float-right"
+    />
     <p>Type ID: {data.typeInfo.typeID}</p>
     {#if data.marketGroup}
       <p>Market Group: {data.marketGroup.marketGroupName}</p>

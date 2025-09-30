@@ -66,10 +66,14 @@
               <Table.Cell class="text-right border-2"
                 >{order.price.toLocaleString()}</Table.Cell
               >
-              <Table.Cell class="border-2 overflow-hidden"
+              <Table.Cell class="border-2 overflow-hidden overflow-ellipsis"
                 >{order.locationName}</Table.Cell
               >
-              <Table.Cell class="border-2">{order.range}</Table.Cell>
+              <Table.Cell class="border-2"
+                >{order.range === "solarsystem"
+                  ? "system"
+                  : order.range}</Table.Cell
+              >
               <Table.Cell class="border-2"
                 >{calculateTimeRemaining(order)}</Table.Cell
               >
