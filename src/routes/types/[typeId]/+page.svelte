@@ -159,9 +159,3 @@
     class="flex-1"
   />
 </div>
-
-<style>
-  .stack {
-    grid-area: 1/1;
-  }
-</style>
