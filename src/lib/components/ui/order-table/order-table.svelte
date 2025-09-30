@@ -47,14 +47,14 @@
   </Card.Header>
   <Card.Content>
     <ScrollArea orientation="vertical" type="hover" class="h-96">
-      <Table.Root class="border-2">
+      <Table.Root class="border-2 min-w-200" style="table-layout: fixed;">
         <Table.Header>
           <Table.Row>
-            <Table.Head class="border-2">Quantity</Table.Head>
-            <Table.Head class="border-2">Price</Table.Head>
-            <Table.Head class="border-2">Location</Table.Head>
-            <Table.Head class="border-2">Range</Table.Head>
-            <Table.Head class="border-2">Expires In</Table.Head>
+            <Table.Head class="border-2 w-[15%]">Quantity</Table.Head>
+            <Table.Head class="border-2 w-[10%]">Price</Table.Head>
+            <Table.Head class="border-2 w-[40%]">Location</Table.Head>
+            <Table.Head class="border-2 w-[10%]">Range</Table.Head>
+            <Table.Head class="border-2 w-[15%]">Expires In</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -66,7 +66,9 @@
               <Table.Cell class="text-right border-2"
                 >{order.price.toLocaleString()}</Table.Cell
               >
-              <Table.Cell class="border-2">{order.locationName}</Table.Cell>
+              <Table.Cell class="border-2 overflow-hidden"
+                >{order.locationName}</Table.Cell
+              >
               <Table.Cell class="border-2">{order.range}</Table.Cell>
               <Table.Cell class="border-2"
                 >{calculateTimeRemaining(order)}</Table.Cell
