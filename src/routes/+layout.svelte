@@ -11,6 +11,6 @@
 </svelte:head>
 
 <ModeWatcher defaultMode={"dark"} />
-<div class="min-h-screen p-2 overflow-hidden">
+<div class="flex flex-col h-screen overflow-hidden">
   {@render children?.()}
 </div>

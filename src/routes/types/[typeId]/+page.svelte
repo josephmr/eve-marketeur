@@ -38,7 +38,7 @@
   </Card.Content>
 </Card.Root>
 
-<Card.Root class="w-full mt-2 p-4">
+<Card.Root class="w-full mt-2 p-4 min-w-200">
   <Card.Content class="w-full h-96 grid">
     {#await getMarketHistory(data.typeInfo.typeID) then history}
       <div class="flex flex-col" style="grid-area: 1/1;">
