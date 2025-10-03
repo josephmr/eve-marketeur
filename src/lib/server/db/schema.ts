@@ -1,5 +1,4 @@
 import {
-  pgTable,
   pgSchema,
   integer,
   varchar,
@@ -14,10 +13,43 @@ import {
   uniqueIndex,
   bigint,
   primaryKey,
+  timestamp,
+  customType,
 } from "drizzle-orm/pg-core";
+import type { EncryptedToken } from "$lib/server/api/oauth";
 
 export const evesde = pgSchema("evesde");
 export const app = pgSchema("app");
+
+const encryptedToken = customType<{ data: EncryptedToken; driverData: string }>(
+  {
+    dataType() {
+      return "text";
+    },
+
+    toDriver(value: EncryptedToken): string {
+      return value as string;
+    },
+
+    fromDriver(value: string): EncryptedToken {
+      return value as EncryptedToken;
+    },
+  }
+);
+
+export const sessions = app.table("sessions", {
+  id: varchar({ length: 32 }).primaryKey().notNull(),
+  secretHash: varchar({ length: 64 }).notNull(),
+
+  createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  lastActivity: timestamp({ withTimezone: true }).defaultNow().notNull(),
+
+  oauthCharacterID: integer().notNull(),
+  oauthAccessToken: encryptedToken().notNull(),
+  oauthRefreshToken: encryptedToken().notNull(),
+  oauthScopes: text().notNull(),
+  oauthExpiresAt: timestamp({ withTimezone: true }).notNull(),
+});
 
 export const invTraitsTraitIDSeq = evesde.sequence("invTraits_traitID_seq", {
   startWith: "1",

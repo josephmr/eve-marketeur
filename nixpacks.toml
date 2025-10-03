@@ -6,7 +6,10 @@ nixpkgsArchive = "a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0"
 cmds = ['pnpm install']
 
 [phases.build]
-cmds = ['pnpm run build']
+cmds = [
+    'timeout 30 pnpm run db:push --config ./drizzle.config.ts --strict=false --verbose',
+    'pnpm run build'
+]
 
 [start]
 cmd = 'node build'

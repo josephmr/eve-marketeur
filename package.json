@@ -17,8 +17,9 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
-		"script:load-static-data": "vite-node --options.transformMode.ssr='/.*/' src/scripts/loadStaticData.ts",
-		"script:update-sde": "vite-node --options.transformMode.ssr='/.*/' src/scripts/updateSde.ts"
+		"db:start": "docker compose up -d",
+		"db:stop": "docker compose down",
+		"db:reset": "docker compose down -v && docker compose up -d"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.9.0",
