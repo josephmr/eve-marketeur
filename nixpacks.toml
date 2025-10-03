@@ -9,4 +9,4 @@ cmds = ['pnpm install']
 cmds = ['pnpm run build']
 
 [start]
-cmd = 'node build'
+cmd = 'pnpm run start'
