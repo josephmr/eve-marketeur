@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"start": "node build",
+		"start": "timeout 20 npm run db:push --config ./drizzle.config.ts --strict=false --verbose && node build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
