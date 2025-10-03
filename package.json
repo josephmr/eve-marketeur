@@ -6,7 +6,7 @@
 	"packageManager": "pnpm@10.17.1",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "pnpm run prepare && vite build",
 		"start": "node build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",

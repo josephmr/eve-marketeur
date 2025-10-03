@@ -7,7 +7,6 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN pnpm run build
 
 # Run DB migration
 ARG DATABASE_URL
@@ -15,6 +14,7 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 RUN pnpm run db:migrate
 
+RUN pnpm run build
 RUN pnpm prune --prod
 
 FROM node:22-alpine AS runner
