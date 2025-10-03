@@ -16,13 +16,20 @@ export type EncryptedToken = string & { __brand: "encrypted_token" };
 export type DecryptedToken = string & { __brand: "decrypted_token" };
 
 const ENCRYPTION_ALGORITHM = "aes-256-cbc";
-const ENCRYPTION_KEY = Buffer.from(env.OAUTH_ENCRYPTION_KEY, "hex");
+
+let encryptionKey: Buffer | undefined;
+function getOauthEncryptionKey(): Buffer {
+  if (encryptionKey) {
+    return encryptionKey;
+  }
+  return Buffer.from(env.OAUTH_ENCRYPTION_KEY, "hex");
+}
 
 export function encryptToken(token: DecryptedToken): EncryptedToken {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(
     ENCRYPTION_ALGORITHM,
-    ENCRYPTION_KEY,
+    getOauthEncryptionKey(),
     iv
   );
 
@@ -39,7 +46,7 @@ export function decryptToken(token: EncryptedToken): DecryptedToken {
 
     const decipher = crypto.createDecipheriv(
       ENCRYPTION_ALGORITHM,
-      ENCRYPTION_KEY,
+      getOauthEncryptionKey(),
       iv
     );
 
