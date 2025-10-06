@@ -71,7 +71,7 @@ export async function initiateLogin(event: RequestEvent) {
     response_type: "code",
     client_id: env.EVE_CLIENT_ID!,
     redirect_uri: env.EVE_REDIRECT_URI!,
-    scope: "publicData",
+    scope: "publicData esi-wallet.read_character_wallet.v1",
     state,
   });
 
@@ -79,6 +79,42 @@ export async function initiateLogin(event: RequestEvent) {
     302,
     `https://login.eveonline.com/v2/oauth/authorize?${params.toString()}`
   );
+}
+
+export async function refreshOauth(refreshToken: DecryptedToken) {
+  return await getToken(refreshToken as string, true);
+}
+
+async function getToken(
+  code: string,
+  isRefresh: boolean = false
+): Promise<{
+  access_token: DecryptedToken;
+  refresh_token: DecryptedToken;
+  expires_in: number;
+}> {
+  const response = await fetch("https://login.eveonline.com/v2/oauth/token", {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(`${env.EVE_CLIENT_ID}:${env.EVE_CLIENT_SECRET}`).toString(
+          "base64"
+        ),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: isRefresh ? "refresh_token" : "authorization_code",
+      [isRefresh ? "refresh_token" : "code"]: code,
+    }),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to fetch oauth token:", await response.text());
+    throw new Error("Failed to fetch oauth token");
+  }
+
+  return await response.json();
 }
 
 export async function callback(event: RequestEvent) {
@@ -92,28 +128,7 @@ export async function callback(event: RequestEvent) {
     return new Response("Invalid state", { status: 400 });
   }
 
-  const response = await fetch("https://login.eveonline.com/v2/oauth/token", {
-    method: "POST",
-    headers: {
-      Authorization:
-        "Basic " +
-        Buffer.from(`${env.EVE_CLIENT_ID}:${env.EVE_CLIENT_SECRET}`).toString(
-          "base64"
-        ),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      code: code || "",
-    }),
-  });
-
-  if (!response.ok) {
-    console.error("Failed to fetch token:", await response.text());
-    return new Response("Failed to fetch token", { status: 500 });
-  }
-
-  const data = await response.json();
+  const data = await getToken(code || "");
 
   const tokenInfo = await verifyToken(data.access_token as DecryptedToken);
   if (!tokenInfo) {

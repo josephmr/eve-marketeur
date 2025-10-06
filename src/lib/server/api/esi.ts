@@ -3,6 +3,8 @@ import { db } from "$lib/server/db";
 import { staStations } from "$lib/server/db/schema";
 import fetch from "$lib/server/fetch";
 
+export type AccessToken = string & { __brand: "access_token" };
+
 // Helper function to convert snake_case to camelCase
 function snakeToCamel(str: string): string {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -17,6 +19,17 @@ function convertKeysToCamelCase<T extends Record<string, any>>(
     result[snakeToCamel(key)] = value;
   }
   return result;
+}
+
+function transformEveDate<T, K extends keyof T>(prop: K) {
+  return (obj: T): Omit<T, K> & { [P in K]: Date } => {
+    const newObj = { ...obj };
+    const v = obj[prop];
+    if (v && typeof v === "string") {
+      (newObj as any)[prop] = new Date(v);
+    }
+    return newObj as Omit<T, K> & { [P in K]: Date };
+  };
 }
 
 type SnakeToCamel<S extends string> = S extends `${infer T}_${infer U}`
@@ -69,11 +82,25 @@ const MarketHistoryApiSchema = z.object({
 });
 const MarketHistory = MarketHistoryApiSchema.transform(
   convertKeysToCamelCase
-).transform((obj) => ({
-  ...obj,
-  date: new Date(obj.date),
-}));
+).transform(transformEveDate("date"));
 export type MarketHistory = z.infer<typeof MarketHistory>;
+
+const WalletTransactionApiSchema = z.object({
+  client_id: z.number(),
+  date: z.string(),
+  is_buy: z.boolean(),
+  is_personal: z.boolean(),
+  journal_ref_id: z.number(),
+  location_id: z.number(),
+  quantity: z.number(),
+  transaction_id: z.number(),
+  type_id: z.number(),
+  unit_price: z.number(),
+});
+const WalletTransaction = WalletTransactionApiSchema.transform(
+  convertKeysToCamelCase
+).transform(transformEveDate("date"));
+export type WalletTransaction = z.infer<typeof WalletTransaction>;
 
 const getAllMarketOrders = async (
   regionId: number,
@@ -148,7 +175,23 @@ async function getMarketHistory(regionId: number, typeId: number) {
   return data;
 }
 
+async function getTransactions(accessToken: AccessToken, characterID: number) {
+  const response = await fetch(
+    `https://esi.evetech.net/characters/${characterID}/wallet/transactions`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  const data = z.array(WalletTransaction).parse(await response.json());
+  return data;
+}
+
 const esi = {
+  wallet: {
+    getTransactions,
+  },
   market: {
     orders: {
       getAll: getAllMarketOrders,

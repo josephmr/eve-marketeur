@@ -11,7 +11,10 @@ pnpm run dev
 
 Deploys are automatically handled on push to main branch via Dokploy.
 
-**Database migrations are done manually!**
+### Gotchas
+
+- **Database migrations are done manually!**
+- `TZ=UTC` must be set!
 
 ### DB Migration
 

@@ -2,11 +2,19 @@ import { sessions } from "$lib/server/db/schema";
 import { db } from "$lib/server/db";
 import { timingSafeEqual, randomBytes, createHash } from "crypto";
 import { eq } from "drizzle-orm";
-import { encryptToken } from "$lib/server/api/oauth";
+import {
+  encryptToken,
+  decryptToken,
+  refreshOauth,
+} from "$lib/server/api/oauth";
 import type { RequestEvent } from "@sveltejs/kit";
 import type { TokenInfo, EncryptedToken } from "$lib/server/api/oauth";
+import type { AccessToken } from "$lib/server/api/esi";
+import { subSeconds, addSeconds } from "date-fns";
+import { getRequestEvent } from "$app/server";
 
 const SESSION_EXPIRATION_SECONDS = 7 * 24 * 60 * 60; // 7 days
+const OAUTH_REFRESH_MARGIN_SECONDS = 30; // 30 seconds
 
 export interface Session {
   id: string;
@@ -24,6 +32,37 @@ export interface Session {
 
 interface SessionWithToken extends Session {
   token: string;
+}
+
+export async function getAccessToken(session: Session): Promise<AccessToken> {
+  const time = new Date();
+  if (
+    time >= subSeconds(session.oauthExpiresAt, OAUTH_REFRESH_MARGIN_SECONDS)
+  ) {
+    console.log("Refreshing access token for session", session.id);
+    const refreshedOauth = await refreshOauth(
+      decryptToken(session.oauthRefreshToken)
+    );
+    const updatedSessions = await refreshSession(session, {
+      oauthAccessToken: encryptToken(refreshedOauth.access_token),
+      oauthExpiresAt: addSeconds(new Date(), refreshedOauth.expires_in),
+    });
+
+    if (!updatedSessions || updatedSessions.length !== 1) {
+      throw new Error("Failed to update session with refreshed token");
+    }
+
+    const event = getRequestEvent();
+    if (event) {
+      event.locals.session = updatedSessions[0];
+    }
+
+    return decryptToken(
+      updatedSessions[0].oauthAccessToken
+    ) as unknown as AccessToken;
+  }
+
+  return decryptToken(session.oauthAccessToken) as unknown as AccessToken;
 }
 
 export function setSessionTokenCookie(event: RequestEvent, token: string) {
@@ -65,6 +104,25 @@ export async function createSession(
   await db.insert(sessions).values(session);
 
   return { ...session, token };
+}
+
+async function refreshSession(
+  session: Session,
+  updates: Partial<Pick<Session, "oauthAccessToken" | "oauthExpiresAt">>
+) {
+  if (Object.keys(updates).length === 0) {
+    return;
+  }
+
+  return await db
+    .update(sessions)
+    .set({
+      ...updates,
+      lastActivity: new Date(),
+    })
+    .where(eq(sessions.id, session.id))
+    .returning()
+    .execute();
 }
 
 export async function validateSessionToken(
