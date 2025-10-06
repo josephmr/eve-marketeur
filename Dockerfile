@@ -3,17 +3,13 @@ WORKDIR /app
 
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml svelte.config.js ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-# Run DB migration
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-
-RUN pnpm run db:migrate
-
+# TODO: Refactor to not need dummy DATABASE_URL at build time
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN pnpm run build
 RUN pnpm prune --prod
 
