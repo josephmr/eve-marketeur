@@ -13,10 +13,6 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"db:push": "drizzle-kit push",
-		"db:pull": "drizzle-kit pull",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "timeout 20 pnpm run db:push --config=./drizzle.config.ts --strict=false --verbose",
-		"db:studio": "drizzle-kit studio",
 		"db:start": "docker compose up -d",
 		"db:stop": "docker compose down",
 		"db:reset": "docker compose down -v && docker compose up -d"
