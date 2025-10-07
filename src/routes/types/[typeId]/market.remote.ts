@@ -1,4 +1,4 @@
-import * as z from "zod";
+import z from "zod";
 import { query } from "$app/server";
 import esi from "$lib/server/api/esi";
 

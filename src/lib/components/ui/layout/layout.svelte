@@ -1,7 +1,6 @@
 <script lang="ts">
   import { getCharacterInfo } from "$lib/common.remote";
   import { ScrollArea } from "$lib/components/ui/scroll-area";
-  import { getCharacterContext } from "$lib/context/character";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -10,26 +9,24 @@
   }
   let { children, title }: Props = $props();
 
-  const characterContext = getCharacterContext();
+  const characterInfo = await getCharacterInfo();
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col h-screen overflow-hidden">
   <header class="h-12 flex shrink-0 border-b justify-between pl-4">
     <div class="flex p-2 items-center">
       <h1 class="text-lg font-medium">
         {@render title()}
       </h1>
     </div>
-    {#if characterContext}
-      <div class="flex items-center">
-        {#await getCharacterInfo(characterContext.characterID) then characterInfo}
-          <div class="pr-2 text-muted-foreground">
-            <span class="">{characterInfo?.name}</span>
-          </div>
-        {/await}
+    {#if characterInfo}
+      <div class="flex items-center pr-1">
+        <div class="pr-2 text-muted-foreground">
+          <span class="">{characterInfo.name}</span>
+        </div>
         <img
           class="h-10"
-          src={`https://images.evetech.net/characters/${characterContext.characterID}/portrait`}
+          src={`https://images.evetech.net/characters/${characterInfo.characterID}/portrait`}
           alt="Character portrait"
         />
       </div>
@@ -44,7 +41,7 @@
   </header>
 
   <main class="flex-1 overflow-hidden">
-    <ScrollArea orientation="both" class="h-full" type="auto">
+    <ScrollArea orientation="vertical" class="h-full" type="auto">
       <div class="p-4 pt-2">
         {@render children()}
       </div>

@@ -1,17 +1,16 @@
 <script>
   import Layout from "$lib/components/ui/layout/layout.svelte";
-  import { page } from "$app/state";
+  import { getTypeInfo } from "$lib/common.remote";
 
-  let { children } = $props();
-  let typeName = $derived(page.data.typeInfo.typeName);
+  let { children, params } = $props();
 </script>
 
 <Layout>
   {#snippet title()}
     Types
-    {#if typeName}
+    {#if params.typeId}
       <span class="text-muted-foreground">
-        > {typeName}
+        > {(await getTypeInfo(parseInt(params.typeId))).typeInfo.typeName}
       </span>
     {/if}
   {/snippet}

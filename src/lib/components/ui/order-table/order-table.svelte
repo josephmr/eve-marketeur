@@ -28,33 +28,32 @@
 
     const duration = intervalToDuration({ start: time, end: endDate });
     const formatted = formatDuration(duration, {
-      format: ["days", "hours", "minutes", "seconds"],
+      format: ["days", "hours", "minutes"],
       delimiter: " ",
       zero: false,
     })
       .replace(/ days?/, "d")
       .replace(/ hours?/, "h")
-      .replace(/ minutes?/, "m")
-      .replace(/ seconds?/, "s");
+      .replace(/ minutes?/, "m");
 
     return formatted;
   }
 </script>
 
-<Card.Root class={cn(className)}>
+<Card.Root class={cn("min-w-200", className)}>
   <Card.Header>
     <Card.Title>{title}</Card.Title>
   </Card.Header>
   <Card.Content>
     <ScrollArea orientation="vertical" type="hover" class="h-96">
-      <Table.Root class="border-2 min-w-200" style="table-layout: fixed;">
+      <Table.Root class="border-2" style="table-layout: fixed;">
         <Table.Header>
           <Table.Row>
             <Table.Head class="border-2 w-[15%]">Quantity</Table.Head>
             <Table.Head class="border-2 w-[10%]">Price</Table.Head>
-            <Table.Head class="border-2 w-[40%]">Location</Table.Head>
+            <Table.Head class="border-2 w-[42%]">Location</Table.Head>
             <Table.Head class="border-2 w-[10%]">Range</Table.Head>
-            <Table.Head class="border-2 w-[15%]">Expires In</Table.Head>
+            <Table.Head class="border-2 w-[13%]">Expires In</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>

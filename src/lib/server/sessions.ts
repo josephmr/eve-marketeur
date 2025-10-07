@@ -7,13 +7,13 @@ import {
   decryptToken,
   refreshOauth,
 } from "$lib/server/api/oauth";
-import type { RequestEvent } from "@sveltejs/kit";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import type { TokenInfo, EncryptedToken } from "$lib/server/api/oauth";
 import type { AccessToken } from "$lib/server/api/esi";
 import { subSeconds, addSeconds } from "date-fns";
 import { getRequestEvent } from "$app/server";
 
-const SESSION_EXPIRATION_SECONDS = 7 * 24 * 60 * 60; // 7 days
+const SESSION_EXPIRATION_SECONDS = 14 * 24 * 60 * 60; // 14 days
 const OAUTH_REFRESH_MARGIN_SECONDS = 30; // 30 seconds
 
 export interface Session {
@@ -39,7 +39,6 @@ export async function getAccessToken(session: Session): Promise<AccessToken> {
   if (
     time >= subSeconds(session.oauthExpiresAt, OAUTH_REFRESH_MARGIN_SECONDS)
   ) {
-    console.log("Refreshing access token for session", session.id);
     const refreshedOauth = await refreshOauth(
       decryptToken(session.oauthRefreshToken)
     );
@@ -49,7 +48,8 @@ export async function getAccessToken(session: Session): Promise<AccessToken> {
     });
 
     if (!updatedSessions || updatedSessions.length !== 1) {
-      throw new Error("Failed to update session with refreshed token");
+      deleteSession(session.id);
+      error(500, "Failed to update session with refreshed token");
     }
 
     const event = getRequestEvent();
@@ -168,9 +168,9 @@ async function getSession(sessionId: string): Promise<Session | null> {
   }
   const session = rows[0];
 
-  // Check expiration
+  // Check last activity and expire session if too old
   if (
-    now.getTime() - session.createdAt.getTime() >=
+    now.getTime() - session.lastActivity.getTime() >=
     SESSION_EXPIRATION_SECONDS * 1000
   ) {
     await deleteSession(sessionId);

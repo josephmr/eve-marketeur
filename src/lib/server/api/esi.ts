@@ -1,4 +1,4 @@
-import * as z from "zod";
+import z from "zod";
 import { db } from "$lib/server/db";
 import { staStations } from "$lib/server/db/schema";
 import fetch from "$lib/server/fetch";
@@ -21,17 +21,6 @@ function convertKeysToCamelCase<T extends Record<string, any>>(
   return result;
 }
 
-function transformEveDate<T, K extends keyof T>(prop: K) {
-  return (obj: T): Omit<T, K> & { [P in K]: Date } => {
-    const newObj = { ...obj };
-    const v = obj[prop];
-    if (v && typeof v === "string") {
-      (newObj as any)[prop] = new Date(v);
-    }
-    return newObj as Omit<T, K> & { [P in K]: Date };
-  };
-}
-
 type SnakeToCamel<S extends string> = S extends `${infer T}_${infer U}`
   ? `${T}${Capitalize<SnakeToCamel<U>>}`
   : S;
@@ -42,7 +31,7 @@ type CamelCaseKeys<T> = {
 const MarketOrderApiSchema = z.object({
   duration: z.number(),
   is_buy_order: z.boolean(),
-  issued: z.string(),
+  issued: z.string().pipe(z.transform((val) => new Date(val))),
   location_id: z.number(),
   min_volume: z.number(),
   order_id: z.number(),
@@ -74,20 +63,18 @@ export type MarketOrder = z.infer<typeof MarketOrder> & {
 
 const MarketHistoryApiSchema = z.object({
   average: z.number(),
-  date: z.string(),
+  date: z.string().pipe(z.transform((val) => new Date(val))),
   highest: z.number(),
   lowest: z.number(),
   order_count: z.number(),
   volume: z.number(),
 });
-const MarketHistory = MarketHistoryApiSchema.transform(
-  convertKeysToCamelCase
-).transform(transformEveDate("date"));
+const MarketHistory = MarketHistoryApiSchema.transform(convertKeysToCamelCase);
 export type MarketHistory = z.infer<typeof MarketHistory>;
 
 const WalletTransactionApiSchema = z.object({
   client_id: z.number(),
-  date: z.string(),
+  date: z.string().pipe(z.transform((val) => new Date(val))),
   is_buy: z.boolean(),
   is_personal: z.boolean(),
   journal_ref_id: z.number(),
@@ -99,7 +86,7 @@ const WalletTransactionApiSchema = z.object({
 });
 const WalletTransaction = WalletTransactionApiSchema.transform(
   convertKeysToCamelCase
-).transform(transformEveDate("date"));
+);
 export type WalletTransaction = z.infer<typeof WalletTransaction>;
 
 const getAllMarketOrders = async (
@@ -190,7 +177,7 @@ async function getTransactions(accessToken: AccessToken, characterID: number) {
 
 const CharacterInfoApiSchema = z.object({
   alliance_id: z.number().optional(),
-  birthday: z.string(),
+  birthday: z.string().pipe(z.transform((val) => new Date(val))),
   bloodline_id: z.number(),
   corporation_id: z.number(),
   description: z.string().optional(),
@@ -201,9 +188,7 @@ const CharacterInfoApiSchema = z.object({
   security_status: z.number().optional(),
   title: z.string().optional(),
 });
-const CharacterInfo = CharacterInfoApiSchema.transform(
-  convertKeysToCamelCase
-).transform(transformEveDate("birthday"));
+const CharacterInfo = CharacterInfoApiSchema.transform(convertKeysToCamelCase);
 export type CharacterInfo = z.infer<typeof CharacterInfo>;
 
 async function getCharacterInfo(characterID: number) {

@@ -2,6 +2,7 @@ import { env } from "$env/dynamic/private";
 import { redirect, type RequestEvent } from "@sveltejs/kit";
 import { createSession, setSessionTokenCookie } from "$lib/server/sessions";
 import * as crypto from "crypto";
+import { error } from "console";
 
 export interface TokenInfo {
   characterID: number;
@@ -132,7 +133,7 @@ export async function callback(event: RequestEvent) {
 
   const tokenInfo = await verifyToken(data.access_token as DecryptedToken);
   if (!tokenInfo) {
-    throw new Response("Failed to verify token", { status: 500 });
+    error(500, "Failed to verify token");
   }
 
   const session = await createSession({
