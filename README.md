@@ -14,7 +14,6 @@ Deploys are automatically handled on push to main branch via Dokploy.
 ### Gotchas
 
 - **Database migrations are done manually!**
-- `TZ=UTC` must be set!
 
 ### DB Migration
 

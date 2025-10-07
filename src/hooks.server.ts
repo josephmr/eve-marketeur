@@ -1,8 +1,12 @@
-import type { Handle } from "@sveltejs/kit";
+import type { Handle, ServerInit } from "@sveltejs/kit";
 import {
   deleteSessionTokenCookie,
   validateSessionToken,
 } from "$lib/server/sessions";
+
+export const init: ServerInit = async () => {
+  process.env.TZ = "UTC";
+};
 
 const authHandle: Handle = async ({ event, resolve }) => {
   const sessionToken = event.cookies.get("session");
