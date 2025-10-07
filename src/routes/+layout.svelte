@@ -2,8 +2,13 @@
   import "../app.css";
   import favicon from "$lib/assets/favicon.svg";
   import { ModeWatcher } from "mode-watcher";
+  import { setCharacterContext } from "$lib/context/character";
 
-  let { children } = $props();
+  let { data, children } = $props();
+
+  if (data.characterID) {
+    setCharacterContext({ characterID: data.characterID });
+  }
 </script>
 
 <svelte:head>

@@ -188,7 +188,35 @@ async function getTransactions(accessToken: AccessToken, characterID: number) {
   return data;
 }
 
+const CharacterInfoApiSchema = z.object({
+  alliance_id: z.number().optional(),
+  birthday: z.string(),
+  bloodline_id: z.number(),
+  corporation_id: z.number(),
+  description: z.string().optional(),
+  faction_id: z.number().optional(),
+  gender: z.enum(["male", "female"]),
+  name: z.string(),
+  race_id: z.number(),
+  security_status: z.number().optional(),
+  title: z.string().optional(),
+});
+const CharacterInfo = CharacterInfoApiSchema.transform(
+  convertKeysToCamelCase
+).transform(transformEveDate("birthday"));
+export type CharacterInfo = z.infer<typeof CharacterInfo>;
+
+async function getCharacterInfo(characterID: number) {
+  const response = await fetch(
+    `https://esi.evetech.net/characters/${characterID}/`
+  );
+  return CharacterInfo.parse(await response.json());
+}
+
 const esi = {
+  character: {
+    getInfo: getCharacterInfo,
+  },
   wallet: {
     getTransactions,
   },

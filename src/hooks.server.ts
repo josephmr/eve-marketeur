@@ -8,7 +8,7 @@ export const init: ServerInit = async () => {
   process.env.TZ = "UTC";
 };
 
-const authHandle: Handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
   const sessionToken = event.cookies.get("session");
 
   if (sessionToken) {
@@ -24,5 +24,3 @@ const authHandle: Handle = async ({ event, resolve }) => {
   event.locals.session = null;
   return resolve(event);
 };
-
-export const handle = authHandle;
