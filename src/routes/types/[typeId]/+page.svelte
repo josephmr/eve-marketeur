@@ -1,29 +1,15 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
-  import * as Chart from "$lib/components/ui/chart";
   import OrderTable from "$lib/components/ui/order-table/order-table.svelte";
-  import { scaleBand, scaleUtc } from "d3-scale";
-  import { BarChart, LineChart } from "layerchart";
-  import { getMarketHistory, getMarketOrders } from "./market.remote";
+  import { getMarketOrders } from "./market.remote";
   import { getTypeInfo } from "$lib/common.remote";
-
-  const chartConfig = {
-    average: {
-      label: "Average",
-      color: "var(--chart-1)",
-    },
-    volume: {
-      label: "Volume",
-      color: "var(--chart-2)",
-    },
-  } satisfies Chart.ChartConfig;
+  import MarketHistory from "./market-history.svelte";
 
   let { params } = $props();
 
   const time = new Date();
   const { typeInfo, marketGroup } = await getTypeInfo(parseInt(params.typeId));
   const orders = await getMarketOrders(typeInfo.typeID);
-  const history = await getMarketHistory(typeInfo.typeID);
 </script>
 
 <Card.Root class="w-full max-w-xl">
@@ -43,111 +29,9 @@
   </Card.Content>
 </Card.Root>
 
-<Card.Root class="w-full mt-2 p-4 min-w-200">
-  <Card.Content class="w-full h-96 grid">
-    <div class="flex flex-col" style="grid-area: 1/1;">
-      <div class="flex-1"></div>
-      <Chart.Container config={chartConfig} class="w-full h-32">
-        <BarChart
-          data={history}
-          axis={true}
-          grid={false}
-          yNice
-          x={(d) => new Date(d.date)}
-          xScale={scaleBand().padding(0.2)}
-          series={[
-            {
-              key: "volume",
-              label: "Volume",
-              color: chartConfig.volume.color,
-            },
-          ]}
-          props={{
-            bars: { radius: 1 },
-            xAxis: {
-              format: () => "",
-            },
-            yAxis: {
-              placement: "right",
-              format: (v: number) =>
-                v >= 1e6
-                  ? `${(v / 1e6).toFixed(0)}M`
-                  : v >= 1e3
-                    ? `${(v / 1e3).toFixed(0)}K`
-                    : `${v.toFixed(0)}`,
-              ticks: 3,
-            },
-          }}
-        />
-      </Chart.Container>
-    </div>
-    <Chart.Container
-      config={chartConfig}
-      class="w-full h-96"
-      style="grid-area: 1/1;"
-    >
-      <LineChart
-        data={history}
-        axis
-        yNice
-        x={(d) => new Date(d.date)}
-        xScale={scaleUtc()}
-        series={[
-          {
-            key: "average",
-            label: "Average",
-            color: chartConfig.average.color,
-          },
-        ]}
-        props={{
-          spline: {
-            strokeWidth: 2,
-          },
-          highlight: {
-            points: {
-              r: 4,
-              motion: "none",
-            },
-          },
-          xAxis: {
-            format: (v: Date) =>
-              v.toLocaleDateString("en-US", { month: "short" }),
-            ticks: Math.max(3, history.length / 30),
-          },
-          yAxis: {
-            format: (v: number) =>
-              v >= 1e6
-                ? `${(v / 1e6).toFixed(1)}M`
-                : v >= 1e3
-                  ? `${(v / 1e3).toFixed(1)}K`
-                  : `${v.toFixed(2)}`,
-            ticks: 5,
-          },
-        }}
-      >
-        {#snippet tooltip()}
-          <Chart.Tooltip
-            labelFormatter={(d) =>
-              d.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-          >
-            {#snippet formatter({ item })}
-              <div class="flex flex-col">
-                <div>
-                  Average: <span>{item.payload.average.toLocaleString()}</span>
-                </div>
-                <div>
-                  Volume: <span>{item.payload.volume.toLocaleString()}</span>
-                </div>
-              </div>
-            {/snippet}
-          </Chart.Tooltip>
-        {/snippet}
-      </LineChart>
-    </Chart.Container>
+<Card.Root class="w-full mt-2 min-w-200">
+  <Card.Content class="w-full">
+    <MarketHistory typeID={typeInfo.typeID} />
   </Card.Content>
 </Card.Root>
 

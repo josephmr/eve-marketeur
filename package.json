@@ -33,7 +33,6 @@
 		"csv-parse": "^6.1.0",
 		"drizzle-kit": "^0.30.6",
 		"drizzle-orm": "^0.40.1",
-		"layerchart": "2.0.0-next.27",
 		"svelte": "^5.39.10",
 		"svelte-check": "^4.3.2",
 		"tailwind-merge": "^3.3.1",
@@ -50,6 +49,7 @@
 		"date-fns": "^4.1.0",
 		"mode-watcher": "^1.1.0",
 		"pg": "^8.16.3",
+		"svelteplot": "^0.4.8",
 		"undici": "^7.16.0",
 		"zod": "^4.1.12"
 	},

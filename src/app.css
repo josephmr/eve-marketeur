@@ -41,6 +41,8 @@
 
   --font-sans: var(--font-mono);
 
+  --svelteplot-tooltip-bg: var(--background);
+
 	.rounded-xs,
 	.rounded-sm,
 	.rounded-md,
