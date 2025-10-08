@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { getTransactions } from "./transactions.remote";
+  import TransactionTable from "./transaction-table.svelte";
 </script>
 
-{#each await getTransactions() as transaction}
-  <div class="border p-2 m-2">
-    <div>Type ID: {transaction.typeId}</div>
-  </div>
-{/each}
+<TransactionTable />
