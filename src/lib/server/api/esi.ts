@@ -163,6 +163,7 @@ async function getMarketHistory(regionId: number, typeId: number) {
 }
 
 async function getTransactions(accessToken: AccessToken, characterID: number) {
+  console.time(`esi:fetch:wallet:${characterID}`);
   const response = await fetch(
     `https://esi.evetech.net/characters/${characterID}/wallet/transactions`,
     {
@@ -171,7 +172,11 @@ async function getTransactions(accessToken: AccessToken, characterID: number) {
       },
     }
   );
-  const data = z.array(WalletTransaction).parse(await response.json());
+  console.timeEnd(`esi:fetch:wallet:${characterID}`);
+  console.time(`esi:parse:wallet:${characterID}`);
+  const json = await response.json();
+  const data = z.array(WalletTransaction).parse(json);
+  console.timeEnd(`esi:parse:wallet:${characterID}`);
   return data;
 }
 

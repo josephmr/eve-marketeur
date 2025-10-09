@@ -21,10 +21,21 @@ export const getCharacterInfo = query(async () => {
   };
 });
 
-export const getTypeInfo = query(z.number(), async (typeID: number) => {
-  const info = await db.getTypeInfo(typeID);
-  if (!info) {
-    error(404, "Item not found");
+export const getTypeInfoOrError = query(z.number(), async (typeID) => {
+  const info = await db.getTypeInfo([typeID]);
+  if (info.length === 0) {
+    throw error(404, "Type not found");
   }
-  return info;
+  return info[0];
 });
+
+export const getTypeInfo = query.batch(
+  z.number(),
+  async (typeIDs: number[]) => {
+    const info = await db.getTypeInfo(typeIDs);
+    const map = new Map(info.map((i) => [i.typeInfo.typeID, i]));
+    return (typeID: number) => {
+      return map.get(typeID) || null;
+    };
+  }
+);

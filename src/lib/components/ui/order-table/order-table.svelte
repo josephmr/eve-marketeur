@@ -5,7 +5,7 @@
   import type { MarketOrder } from "$lib/server/api/esi";
   import { cn } from "$lib/utils.js";
   import type { ClassValue } from "svelte/elements";
-  import { addDays, intervalToDuration, formatDuration } from "date-fns";
+  import * as format from "$lib/format";
 
   let {
     title,
@@ -18,26 +18,6 @@
     time: Date;
     class?: ClassValue;
   } = $props();
-
-  function calculateTimeRemaining(order: MarketOrder): string {
-    const endDate = addDays(new Date(order.issued), order.duration);
-
-    if (time >= endDate) {
-      return "Expired";
-    }
-
-    const duration = intervalToDuration({ start: time, end: endDate });
-    const formatted = formatDuration(duration, {
-      format: ["days", "hours", "minutes"],
-      delimiter: " ",
-      zero: false,
-    })
-      .replace(/ days?/, "d")
-      .replace(/ hours?/, "h")
-      .replace(/ minutes?/, "m");
-
-    return formatted;
-  }
 </script>
 
 <Card.Root class={cn("min-w-200", className)}>
@@ -60,21 +40,23 @@
           {#each orders as order (order.orderId)}
             <Table.Row>
               <Table.Cell class="text-right border-2"
-                >{order.volumeRemain.toLocaleString()}</Table.Cell
+                >{format.quantity(order.volumeRemain)}</Table.Cell
               >
               <Table.Cell class="text-right border-2"
-                >{order.price.toLocaleString()}</Table.Cell
+                >{format.price(order.price)}</Table.Cell
               >
               <Table.Cell class="border-2 overflow-hidden overflow-ellipsis"
                 >{order.locationName}</Table.Cell
               >
               <Table.Cell class="border-2"
-                >{order.range === "solarsystem"
-                  ? "system"
-                  : order.range}</Table.Cell
+                >{format.range(order.range)}</Table.Cell
               >
               <Table.Cell class="border-2"
-                >{calculateTimeRemaining(order)}</Table.Cell
+                >{format.timeRemaining(
+                  order.issued,
+                  order.duration,
+                  time
+                )}</Table.Cell
               >
             </Table.Row>
           {/each}

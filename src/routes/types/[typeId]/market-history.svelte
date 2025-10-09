@@ -14,6 +14,7 @@
   import { browser } from "$app/environment";
   import type { MarketHistory } from "$lib/server/api/esi";
   import AreaY from "svelteplot/marks/AreaY.svelte";
+  import * as format from "$lib/format";
 
   let { typeID }: { typeID: number } = $props();
 
@@ -40,7 +41,7 @@
           frameAnchor="top-right"
           dx={-10}
           dy={10}
-          text={(d) => `${d.volume.toLocaleString()}`}
+          text={(d) => `${format.quantity(d.volume)}`}
         />
         <RectY data={sel} x="date" y="volume" interval="day" fil="white" />
       {/if}
@@ -56,19 +57,15 @@
           frameAnchor="top-right"
           dx={-10}
           dy={10}
-          text={(d) =>
-            `${d.average.toLocaleString(undefined, {
-              maximumFractionDigits: d.average > 1000 ? 0 : 2,
-              minimumFractionDigits: d.average > 1000 ? 0 : 2,
-            })}`}
+          text={(d) => `${format.price(d.average)}`}
         />
         <Text
           data={sel}
-          textAnchor="begin"
+          textAnchor="start"
           frameAnchor="top-left"
           dx={10}
           dy={10}
-          text={(d) => `${d.date.toLocaleDateString()}`}
+          text={(d) => `${format.date(d.date)}`}
         />
         <RuleX data={sel} x="date" opacity={0.2} />
         <RuleY data={sel} y="average" opacity={0.2} />

@@ -2,13 +2,15 @@
   import * as Card from "$lib/components/ui/card";
   import OrderTable from "$lib/components/ui/order-table/order-table.svelte";
   import { getMarketOrders } from "./market.remote";
-  import { getTypeInfo } from "$lib/common.remote";
+  import { getTypeInfoOrError } from "$lib/common.remote";
   import MarketHistory from "./market-history.svelte";
 
   let { params } = $props();
 
   const time = new Date();
-  const { typeInfo, marketGroup } = await getTypeInfo(parseInt(params.typeId));
+  const { typeInfo, marketGroup } = await getTypeInfoOrError(
+    parseInt(params.typeId)
+  );
   const orders = await getMarketOrders(typeInfo.typeID);
 </script>
 

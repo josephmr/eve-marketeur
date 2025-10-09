@@ -1,7 +1,9 @@
 <script lang="ts">
   import * as Table from "$lib/components/ui/table";
+  import * as format from "$lib/format";
   import Time from "./time.svelte";
   import { getTransactions } from "./transactions.remote";
+  import Type from "./type.svelte";
 
   const transactions = await getTransactions();
 </script>
@@ -22,14 +24,18 @@
         <Table.Cell class="border-2"
           ><Time time={transaction.date} /></Table.Cell
         >
-        <Table.Cell class="border-2">{transaction.typeId}</Table.Cell>
-        <Table.Cell class="border-2">{transaction.quantity}</Table.Cell>
         <Table.Cell class="border-2"
-          >{transaction.unitPrice.toFixed(2)}</Table.Cell
+          ><Type typeID={transaction.typeId} /></Table.Cell
         >
-        <Table.Cell class="border-2"
-          >{(transaction.unitPrice * transaction.quantity).toFixed(
-            2
+        <Table.Cell class="border-2 text-right"
+          >{format.quantity(transaction.quantity)}</Table.Cell
+        >
+        <Table.Cell class="border-2 text-right"
+          >{format.price(transaction.unitPrice)}</Table.Cell
+        >
+        <Table.Cell class="border-2 text-right"
+          >{format.price(
+            transaction.unitPrice * transaction.quantity
           )}</Table.Cell
         >
       </Table.Row>
