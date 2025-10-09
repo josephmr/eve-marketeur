@@ -13,6 +13,7 @@
   import { getMarketHistory } from "../../types/[typeId]/market.remote";
   import { browser } from "$app/environment";
   import type { MarketHistory } from "$lib/server/api/esi";
+  import AreaY from "svelteplot/marks/AreaY.svelte";
 
   let { typeID }: { typeID: number } = $props();
 
@@ -47,6 +48,7 @@
     <Plot frame y={{ nice: true }} margin={{ left: 40, right: 40 }}>
       <AxisX interval="month" />
       <Line {data} x="date" y="average" />
+      <AreaY {data} x="date" y1="lowest" y2="highest" opacity={0.2} />
       {#if sel}
         <Text
           data={sel}
@@ -54,7 +56,11 @@
           frameAnchor="top-right"
           dx={-10}
           dy={10}
-          text={(d) => `${d.average}`}
+          text={(d) =>
+            `${d.average.toLocaleString(undefined, {
+              maximumFractionDigits: d.average > 1000 ? 0 : 2,
+              minimumFractionDigits: d.average > 1000 ? 0 : 2,
+            })}`}
         />
         <Text
           data={sel}
