@@ -18,6 +18,7 @@
 		"db:reset": "docker compose down -v && docker compose up -d"
 	},
 	"devDependencies": {
+		"@iconify/json": "^2.2.393",
 		"@internationalized/date": "^3.10.0",
 		"@lucide/svelte": "^0.544.0",
 		"@sveltejs/adapter-auto": "^6.1.1",
@@ -44,6 +45,7 @@
 		"vite-node": "^3.2.4"
 	},
 	"dependencies": {
+		"@iconify/tailwind4": "^1.0.6",
 		"@sveltejs/adapter-node": "^5.3.3",
 		"d3-scale": "^4.0.2",
 		"date-fns": "^4.1.0",

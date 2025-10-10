@@ -53,4 +53,9 @@
       </Tooltip.Content>
     </Tooltip.Root>
   </Tooltip.Provider>
+  <a
+    href={`/types/${item.typeInfo.typeID}`}
+    class="icon-[streamline--expand-window-2] text-muted-foreground"
+    aria-label="Open type details"
+  ></a>
 {/if}

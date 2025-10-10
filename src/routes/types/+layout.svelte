@@ -3,15 +3,17 @@
   import { getTypeInfoOrError } from "$lib/common.remote";
 
   let { children, params } = $props();
+
+  const typeId = $derived(Number(params.typeId));
 </script>
 
 <Layout>
   {#snippet title()}
     Types
-    {#if params.typeId}
+    {#if !Number.isNaN(typeId)}
+      {console.log(params.typeId)}
       <span class="text-muted-foreground">
-        > {(await getTypeInfoOrError(parseInt(params.typeId))).typeInfo
-          .typeName}
+        > {(await getTypeInfoOrError(typeId)).typeInfo.typeName}
       </span>
     {/if}
   {/snippet}

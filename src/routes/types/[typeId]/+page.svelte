@@ -8,10 +8,10 @@
   let { params } = $props();
 
   const time = new Date();
-  const { typeInfo, marketGroup } = await getTypeInfoOrError(
-    parseInt(params.typeId)
-  );
-  const orders = await getMarketOrders(typeInfo.typeID);
+  $inspect(params.typeId).with(console.trace);
+  const typeId = $derived(Number(params.typeId));
+  const { typeInfo, marketGroup } = $derived(await getTypeInfoOrError(typeId));
+  const orders = $derived(await getMarketOrders(typeInfo.typeID));
 </script>
 
 <Card.Root class="w-full max-w-xl">
